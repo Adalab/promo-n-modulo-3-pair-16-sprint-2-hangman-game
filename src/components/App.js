@@ -6,6 +6,7 @@ function App() {
   let [lastLetter, setLastLetter] = useState([]);
   let [word, setWord] = useState("katakroker");
   let [userLetters, setUserLetters] = useState([]);
+  let [errorLetters, setErrorLetters] = useState([]);
 
   //Funcion numero de errores
 
@@ -20,26 +21,33 @@ function App() {
     const inputLastLetter = ev.target.value;
     if (/^[A-Za-zÑñÁáÉéÍíÓóÚúÜü]$/.test(inputLastLetter)) {
       setLastLetter(inputLastLetter);
-      if(!userLetters.includes(inputLastLetter)){
-        setUserLetters([...userLetters,inputLastLetter]);
+      if (word.includes(inputLastLetter)) {
+        setUserLetters([...userLetters, inputLastLetter]);
+      } else {
+        setErrorLetters([...errorLetters, inputLastLetter]);
+        numberOfErrors(ev);
       }
     } else {
+      // La letra eestá mal escrita. No es una letra
       setLastLetter("");
     }
-    
   };
 
-  let renderSolutionLetters = () =>{
-    const wordLetters = word.split('');
-      return wordLetters.map((word,index) => {
-        if(userLetters.includes(word)){
-          return (<li className="letter" key={index}>{word}</li>)
-        }else{
-          return (<li className="letter" key={index}></li>)
-        }
-      })
-  }
-  
+  let renderSolutionLetters = () => {
+    const wordLetters = word.split("");
+    return wordLetters.map((word, index) => {
+      if (userLetters.includes(word)) {
+        return (
+          <li className="letter" key={index}>
+            {word}
+          </li>
+        );
+      } else {
+        return <li className="letter" key={index}></li>;
+      }
+    });
+  };
+
   return (
     <div>
       <div className="page">
@@ -76,9 +84,9 @@ function App() {
                 onChange={handleLastLetter}
                 value={lastLetter}
               />
-              <button className="btn" onClick={numberOfErrors}>
+              {/*<button className="btn" onClick={numberOfErrors}>
                 incrementar
-              </button>
+  </button>*/}
             </form>
           </section>
           <section className={`dummy error-${error}`}>
